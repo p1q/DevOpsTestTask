@@ -85,18 +85,31 @@ Flood test (expect some 429s):
 
 ### 4. Run Kubernetes
 kind create cluster --name devops --config k8s/kind-config.yaml
+
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+
 helm repo update
+
 helm install ingress-nginx ingress-nginx/ingress-nginx --namespace default --set controller.hostNetwork=true --set controller.hostPorts.http=80 --set controller.hostPorts.https=443 --set controller.kind=DaemonSet
+
 docker build -t devops-test-app:latest ./app
+
 kind load docker-image devops-test-app:latest --name devops
+
 kubectl apply -f k8s/deployment.yaml
+
 kubectl apply -f k8s/service.yaml
+
 kubectl patch deployment app -p '{"spec":{"template":{"spec":{"containers":[{"name":"app","imagePullPolicy":"IfNotPresent"}]}}}}'
+
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout k8s/tls.key -out k8s/tls.crt -subj "/CN=localhost" -addext "subjectAltName=DNS:localhost"
+
 kubectl create secret tls app-tls --cert=k8s/tls.crt --key=k8s/tls.key
+
 kubectl apply -f k8s/ingress.yaml
+
 kubectl get pods -w
+
 curl -vk https://localhost/healthz
 
 ### _Expected Output:_
