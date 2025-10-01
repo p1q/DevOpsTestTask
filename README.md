@@ -17,33 +17,51 @@
 
 ### 1. Install utilities
 sudo apt update && sudo apt upgrade -y
+
 sudo apt install -y docker.io
+
 sudo usermod -aG docker $USER && newgrp docker
+
 newgrp docker
 
 sudo mkdir -p /usr/local/lib/docker/cli-plugins
+
 sudo curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
+
 sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
 
+
 sudo apt install -y make curl jq git
+
 sudo apt install -y apt-transport-https curl
 
+
+
 sudo snap install helm --classic
+
 sudo snap install kubectl --classic
 
+
 sudo curl -Lo /usr/local/bin/kind https://github.com/kubernetes-sigs/kind/releases/latest/download/kind-linux-amd64
+
 sudo chmod +x /usr/local/bin/kind
 
 ### 2. Clone repository
 sudo mkdir /DevOpsTestTask
+
 sudo chown $(whoami):$(whoami) /DevOpsTestTask
+
 git clone https://github.com/p1q/DevOpsTestTask.git
+
 cd /DevOpsTestTask
 
 ### 3. Run Docker
 make up
+
 curl -s http://localhost:8080/healthz
+
 make test
+
 make logs
 
 ### _Expected Output:_
